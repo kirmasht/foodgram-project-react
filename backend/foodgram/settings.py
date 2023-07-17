@@ -16,16 +16,12 @@ SECRET_KEY = os.getenv(
 CSRF_TRUSTED_ORIGINS = [
     'http://*localhost',
     'https://*localhost',
-    'http://*foodgram2023.hopto.org',
-    'https://*foodgram2023.hopto.org',
-    'http://*178.154.224.46',
-    'http://*178.154.224.46'
 ]
 
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'foodgram2023.hopto.org', '178.154.224.46', 'localhost', 'backend', '127.0.0.1'
+    'localhost', 'backend', '127.0.0.1'
 ]
 
 INSTALLED_APPS = [
