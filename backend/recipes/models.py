@@ -122,13 +122,11 @@ class Recipe(models.Model):
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
 
-
     def __str__(self):
         return self.name[:NAME_PREVIEW]
 
 
 class IngredientsAmount(models.Model):
-
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
@@ -197,7 +195,6 @@ class FavoriteRecipe(models.Model):
 
 
 class ShoppingCart(models.Model):
-
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
