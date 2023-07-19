@@ -99,7 +99,7 @@ class RecipeViewSet(CreateRetrievListPatchDestroyViewSet):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
-    def _action_post_delete(self, pk, serializer_class):
+    def action_post_delete(self, pk, serializer_class):
         user = self.request.user
         recipe = get_object_or_404(Recipe, pk=pk)
         model_obj = serializer_class.Meta.model.objects.filter(
@@ -134,7 +134,7 @@ class RecipeViewSet(CreateRetrievListPatchDestroyViewSet):
 
     @action(methods=['GET'], detail=False,
             permission_classes=[IsAuthenticated], pagination_class=None)
-    def add_to_shopping_cart(self, request):
+    def download_shopping_cart(self, request):
         user = request.user
         if not user.shopcarts.exists():
             return Response({'error': 'Список покупок пуст'},
