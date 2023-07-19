@@ -1,16 +1,15 @@
 from django.contrib.auth import get_user_model
-from django.core.validators import MinLengthValidator, MinValueValidator
+from django.core import validators
+from django.conf import settings
 from django.db import models
 
 User = get_user_model()
-
-NAME_PREVIEW = 20
 
 
 class Ingredient(models.Model):
     name = models.CharField(
         'Название',
-        max_length=100,
+        max_length=settings.CONST_LENGTH,
         db_index=True
     )
     measurement_unit = models.CharField(
@@ -36,8 +35,7 @@ class Ingredient(models.Model):
 class Tag(models.Model):
     name = models.CharField(
         'Название',
-        max_length=100,
-        db_index=True,
+        max_length=settings.CONST_LENGTH,
         unique=True
     )
     color = models.CharField(
@@ -46,14 +44,15 @@ class Tag(models.Model):
         unique=True,
         default='#',
         validators=[
-            MinLengthValidator(
-                7, message='Hex-код состоит из 7 символов'
+            validators.RegexValidator(
+                regex=r'^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$',
+                message='Введенное значение в формате HEX'
             )
         ]
     )
     slug = models.SlugField(
         'Slug',
-        max_length=100,
+        max_length=settings.CONST_LENGTH,
         unique=True
     )
 
@@ -81,7 +80,7 @@ class Recipe(models.Model):
     )
     name = models.CharField(
         'Название',
-        max_length=200,
+        max_length=settings.CONST_LENGTH,
         db_index=True
     )
     image = models.ImageField(
@@ -108,13 +107,15 @@ class Recipe(models.Model):
         'Время приготовления',
         null=False,
         validators=[
-            MinValueValidator(
+            validators.MinValueValidator(
                 1, message='Время не должно быть меньше 1'
             )
         ],
     )
     pub_date = models.DateTimeField(
-        'Дата публикации', auto_now_add=True, db_index=True
+        'Дата публикации',
+        auto_now_add=True,
+        db_index=True
     )
 
     class Meta:
@@ -123,7 +124,7 @@ class Recipe(models.Model):
         verbose_name_plural = 'Рецепты'
 
     def __str__(self):
-        return self.name[:NAME_PREVIEW]
+        return self.name[:settings.NAME_PREVIEW]
 
 
 class IngredientsAmount(models.Model):
@@ -142,7 +143,7 @@ class IngredientsAmount(models.Model):
     amount = models.PositiveSmallIntegerField(
         'Количество',
         validators=[
-            MinValueValidator(
+            validators.MinValueValidator(
                 1,
                 message='Количество ингредиентов не должно быть меньше 1'
             )

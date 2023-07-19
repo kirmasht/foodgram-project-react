@@ -1,23 +1,21 @@
 from django.contrib.auth.models import AbstractUser
-from django.db.models import (CASCADE, CharField, EmailField, ForeignKey,
-                              Model, UniqueConstraint)
-from rest_framework.exceptions import ValidationError
-
+from django.db import models
+from django.core.exceptions import ValidationError
+from django.conf import settings
 
 class CustomUser(AbstractUser):
-
-    first_name = CharField(
+    first_name = models.CharField(
         'Имя',
-        max_length=200
+        max_length=settings.CONST_LENGTH
     )
-    last_name = CharField(
+    last_name = models.CharField(
         'Фамилия',
-        max_length=200
+        max_length=settings.CONST_LENGTH
     )
-    email = EmailField(
+    email = models.EmailField(
         'Email',
         unique=True,
-        max_length=200
+        max_length=settings.CONST_LENGTH
     )
 
     USERNAME_FIELD = 'email'
@@ -27,7 +25,7 @@ class CustomUser(AbstractUser):
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
         constraints = [
-            UniqueConstraint(
+            models.UniqueConstraint(
                 fields=('username', 'email'),
                 name='unique_user'
             )
@@ -39,33 +37,29 @@ class CustomUser(AbstractUser):
                 {'error': 'Невозможно создать пользователя с именем me'}
             )
 
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        return super().save(*args, **kwargs)
-
     def __str__(self):
         return self.username
 
 
-class Follow(Model):
-    user = ForeignKey(
+class Follow(models.Model):
+    user = models.ForeignKey(
         CustomUser,
         related_name='followers',
         verbose_name='Подписчик',
-        on_delete=CASCADE
+        on_delete=models.CASCADE
     )
-    author = ForeignKey(
+    author = models.ForeignKey(
         CustomUser,
         related_name='followings',
         verbose_name='Автор',
-        on_delete=CASCADE
+        on_delete=models.CASCADE
     )
 
     class Meta:
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
         constraints = [
-            UniqueConstraint(
+            models.UniqueConstraint(
                 fields=['author', 'user'],
                 name='unique_follower'
             )

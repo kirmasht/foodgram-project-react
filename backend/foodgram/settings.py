@@ -16,12 +16,16 @@ SECRET_KEY = os.getenv(
 CSRF_TRUSTED_ORIGINS = [
     'http://*localhost',
     'https://*localhost',
+    'http://*158.160.66.67',
+    'https://*158.160.66.67',
+    'http://*foodgram911.sytes.net',
+    'https://*foodgram911.sytes.net',
 ]
 
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'localhost', 'backend', '127.0.0.1'
+    '158.160.66.67','localhost', 'backend', '127.0.0.1', 'foodgram911.sytes.net',
 ]
 
 INSTALLED_APPS = [
@@ -70,22 +74,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'foodgram.wsgi.application'
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
-#         'NAME': os.getenv('DB_NAME', default='postgres'),
-#         'USER': os.getenv('POSTGRES_USER', default='postgres'),
-#         'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='postgres123'),
-#         'HOST': os.getenv('DB_HOST', default='localhost'),
-#         'PORT': os.getenv('DB_PORT', default='80')
-#     }
-# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('POSTGRES_DB', 'django'),
+        'USER': os.getenv('POSTGRES_USER', 'django'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', ''),
+        'HOST': os.getenv('DB_HOST', ''),
+        'PORT': os.getenv('DB_PORT', 5432)
     }
 }
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -105,6 +104,8 @@ AUTH_PASSWORD_VALIDATORS = [
             'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+CONST_LENGTH = 200
+NAME_PREVIEW = 20
 
 LANGUAGE_CODE = 'ru-ru'
 
@@ -132,7 +133,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_PAGINATION_CLASS':
-        'rest_framework.pagination.LimitOffsetPagination',
+        'api.paginations.LimitPagination',
     'PAGE_SIZE': 6,
 }
 

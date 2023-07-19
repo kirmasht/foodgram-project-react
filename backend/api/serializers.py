@@ -1,13 +1,13 @@
 from djoser.serializers import UserSerializer
 from rest_framework import serializers
 
+
 from recipes.models import (
     FavoriteRecipe, Ingredient,
     IngredientsAmount, Recipe,
     ShoppingCart, Tag
 )
 from users.models import CustomUser, Follow
-
 from .utils import Base64ImageField
 
 
@@ -98,7 +98,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
         queryset = IngredientsAmount.objects.filter(recipe=obj)
         return IngredientsAmountSerializer(queryset, many=True).data
 
-    def get_favorited(self, obj):
+    def get_is_favorited(self, obj):
         user = self.context.get('request').user
         if user.is_anonymous:
             return False

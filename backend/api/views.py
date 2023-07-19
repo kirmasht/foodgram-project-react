@@ -1,10 +1,9 @@
-from datetime import datetime
-
+from django.utils import timezone
 from django.db.models import F, Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from djoser.views import UserViewSet
+from djoser.views import UserViewSet as djoser_UserViewSet
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import (SAFE_METHODS, AllowAny,
@@ -23,13 +22,13 @@ from .serializers import (CustomUserSerializer, FavoriteRecipeSerializer,
                           FollowSerializer, IngredientSerializer,
                           RecipeCreateUpdateSerializer, RecipeListSerializer,
                           ShoppingCartSerializer, TagSerializer)
+from .mixins import CreateRetrievListPatchDestroyViewSet
 
 
-class UsersViewSet(UserViewSet):
+class UsersViewSet(djoser_UserViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
     permission_classes = [AllowAny]
-    add_serializer = FollowSerializer
 
     @action(methods=['GET'], detail=False,
             permission_classes=[IsAuthenticated])
@@ -80,19 +79,17 @@ class IngredientViewSet(ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     filter_backends = (DjangoFilterBackend,)
-    filterset_class = IngredientFilter
     permission_classes = [IsAuthenticatedOrReadOnly]
     search_fields = ('^name',)
     pagination_class = None
 
 
-class RecipeViewSet(ModelViewSet):
+class RecipeViewSet(CreateRetrievListPatchDestroyViewSet):
     queryset = Recipe.objects.all()
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
     permission_classes = [AuthorStaffOrReadOnly]
     pagination_class = LimitPagination
-    http_method_names = ['get', 'post', 'patch', 'delete']
 
     def get_serializer_class(self):
         if self.action in SAFE_METHODS:
@@ -102,7 +99,7 @@ class RecipeViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
-    def action_post_delete(self, pk, serializer_class):
+    def _action_post_delete(self, pk, serializer_class):
         user = self.request.user
         recipe = get_object_or_404(Recipe, pk=pk)
         model_obj = serializer_class.Meta.model.objects.filter(
@@ -151,7 +148,7 @@ class RecipeViewSet(ModelViewSet):
 
         filename = f'{user.username}_shopping_list.txt'
         shopping_list = (f'Список покупок\n\n{user.username}\n'
-                         f'{datetime.now().strftime("%d/%m/%Y %H:%M")}\n\n')
+                         f'{timezone.now().strftime("%d/%m/%Y %H:%M")}\n\n')
         for ing in ingredients:
             shopping_list += (
                 f'{ing["ingredients"]} - {ing["amount"]}, {ing["measure"]}\n'
