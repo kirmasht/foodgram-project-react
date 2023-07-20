@@ -1,5 +1,6 @@
 from rest_framework.response import Response
-from rest_framework import filters, mixins, viewsets
+from rest_framework import mixins, viewsets
+
 
 class PatchModelMixin:
     def partial_update(self, request, *args, **kwargs):
@@ -18,6 +19,7 @@ class PatchModelMixin:
 
     def perform_update(self, serializer):
         serializer.save()
+
 
 class CreateRetrievListPatchDestroyViewSet(mixins.CreateModelMixin,
                                            mixins.RetrieveModelMixin,

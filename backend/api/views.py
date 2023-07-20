@@ -1,21 +1,20 @@
 from django.utils import timezone
 from django.db.models import F, Sum
 from django.http import HttpResponse
+from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet as djoser_UserViewSet
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.permissions import (SAFE_METHODS, AllowAny,
-                                        IsAuthenticated,
-                                        IsAuthenticatedOrReadOnly)
+from rest_framework import permissions
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from recipes.models import Ingredient, IngredientsAmount, Recipe, Tag
-from users.models import CustomUser, Follow
+from users.models import Follow
 
-from .filters import IngredientFilter, RecipeFilter
+from .filters import RecipeFilter
 from .paginations import LimitPagination
 from .permissions import AuthorStaffOrReadOnly
 from .serializers import (CustomUserSerializer, FavoriteRecipeSerializer,
@@ -24,14 +23,15 @@ from .serializers import (CustomUserSerializer, FavoriteRecipeSerializer,
                           ShoppingCartSerializer, TagSerializer)
 from .mixins import CreateRetrievListPatchDestroyViewSet
 
+CustomUser = get_user_model()
 
 class UsersViewSet(djoser_UserViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [permissions.AllowAny]
 
     @action(methods=['GET'], detail=False,
-            permission_classes=[IsAuthenticated])
+            permission_classes=[permissions.IsAuthenticated])
     def subscriptions(self, request):
         user = self.request.user
         authors = CustomUser.objects.filter(followings__user=user)
@@ -42,7 +42,7 @@ class UsersViewSet(djoser_UserViewSet):
         return self.get_paginated_response(serializer.data)
 
     @action(methods=['POST', 'DELETE'], detail=True,
-            permission_classes=[IsAuthenticated])
+            permission_classes=[permissions.IsAuthenticated])
     def subscribe(self, request, id):
         user = self.request.user
         author = get_object_or_404(CustomUser, id=id)
@@ -71,7 +71,7 @@ class UsersViewSet(djoser_UserViewSet):
 class TagViewSet(ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     pagination_class = None
 
 
@@ -79,7 +79,7 @@ class IngredientViewSet(ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     filter_backends = (DjangoFilterBackend,)
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     search_fields = ('^name',)
     pagination_class = None
 
@@ -92,7 +92,7 @@ class RecipeViewSet(CreateRetrievListPatchDestroyViewSet):
     pagination_class = LimitPagination
 
     def get_serializer_class(self):
-        if self.action in SAFE_METHODS:
+        if self.action in permissions.SAFE_METHODS:
             return RecipeListSerializer
         return RecipeCreateUpdateSerializer
 
@@ -123,17 +123,17 @@ class RecipeViewSet(CreateRetrievListPatchDestroyViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(methods=['POST', 'DELETE'], detail=True,
-            permission_classes=[IsAuthenticated])
+            permission_classes=[permissions.IsAuthenticated])
     def favorite(self, request, pk=None):
         return self.action_post_delete(pk, FavoriteRecipeSerializer)
 
     @action(methods=['POST', 'DELETE'], detail=True,
-            permission_classes=[IsAuthenticated])
+            permission_classes=[permissions.IsAuthenticated])
     def shopping_cart(self, request, pk=None):
         return self.action_post_delete(pk, ShoppingCartSerializer)
 
     @action(methods=['GET'], detail=False,
-            permission_classes=[IsAuthenticated], pagination_class=None)
+            permission_classes=[permissions.IsAuthenticated], pagination_class=None)
     def download_shopping_cart(self, request):
         user = request.user
         if not user.shopcarts.exists():

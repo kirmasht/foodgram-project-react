@@ -25,7 +25,7 @@ CSRF_TRUSTED_ORIGINS = [
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '158.160.66.67','localhost', 'backend', '127.0.0.1', 'foodgram911.sytes.net',
+    '158.160.66.67', 'localhost', 'backend', '127.0.0.1', 'foodgram911.sytes.net',
 ]
 
 INSTALLED_APPS = [
