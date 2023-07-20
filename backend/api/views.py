@@ -25,6 +25,7 @@ from .mixins import CreateRetrievListPatchDestroyViewSet
 
 CustomUser = get_user_model()
 
+
 class UsersViewSet(djoser_UserViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
@@ -133,7 +134,8 @@ class RecipeViewSet(CreateRetrievListPatchDestroyViewSet):
         return self.action_post_delete(pk, ShoppingCartSerializer)
 
     @action(methods=['GET'], detail=False,
-            permission_classes=[permissions.IsAuthenticated], pagination_class=None)
+            permission_classes=[permissions.IsAuthenticated],
+            pagination_class=None)
     def download_shopping_cart(self, request):
         user = request.user
         if not user.shopcarts.exists():
