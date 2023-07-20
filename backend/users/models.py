@@ -3,6 +3,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.conf import settings
 
+
 class CustomUser(AbstractUser):
     first_name = models.CharField(
         'Имя',
