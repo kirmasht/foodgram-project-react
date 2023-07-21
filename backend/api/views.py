@@ -11,7 +11,9 @@ from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
-from recipes.models import Ingredient, IngredientsAmount, Recipe, Tag
+from recipes.models import IngredientsAmount, Recipe
+from ingridients.models import Ingredient
+from tags.models import Tag
 from users.models import Follow
 
 from .filters import RecipeFilter

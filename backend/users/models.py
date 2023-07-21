@@ -38,6 +38,10 @@ class CustomUser(AbstractUser):
                 {'error': 'Невозможно создать пользователя с именем me'}
             )
 
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super().save(*args, **kwargs)
+
     def __str__(self):
         return self.username
 

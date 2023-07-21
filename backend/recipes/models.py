@@ -3,72 +3,9 @@ from django.core import validators
 from django.conf import settings
 from django.db import models
 
+from ingridients.models import Ingredient
+from tags.models import Tag
 User = get_user_model()
-
-
-class Ingredient(models.Model):
-    name = models.CharField(
-        'Название',
-        max_length=settings.CONST_LENGTH,
-        db_index=True
-    )
-    measurement_unit = models.CharField(
-        'Единица измерения',
-        max_length=50
-    )
-
-    class Meta:
-        verbose_name = 'Ингредиент'
-        verbose_name_plural = 'Ингредиенты'
-        ordering = ('name',)
-        constraints = [
-            models.UniqueConstraint(
-                fields=['name', 'measurement_unit'],
-                name='unique_ingredient'
-            )
-        ]
-
-    def __str__(self):
-        return f'{self.name}, {self.measurement_unit}'
-
-
-class Tag(models.Model):
-    name = models.CharField(
-        'Название',
-        max_length=settings.CONST_LENGTH,
-        unique=True
-    )
-    color = models.CharField(
-        'Цветовой HEX-код',
-        max_length=7,
-        unique=True,
-        default='#',
-        validators=[
-            validators.RegexValidator(
-                regex=r'^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$',
-                message='Введенное значение в формате HEX'
-            )
-        ]
-    )
-    slug = models.SlugField(
-        'Slug',
-        max_length=settings.CONST_LENGTH,
-        unique=True
-    )
-
-    class Meta:
-        verbose_name = 'Тег'
-        verbose_name_plural = 'Теги'
-        ordering = ('name',)
-        constraints = [
-            models.UniqueConstraint(
-                fields=['name', 'color', 'slug'],
-                name='unique_tag'
-            )
-        ]
-
-    def __str__(self):
-        return self.name
 
 
 class Recipe(models.Model):
@@ -184,6 +121,7 @@ class FavoriteRecipe(models.Model):
 
     class Meta:
         verbose_name = 'Список избранного'
+        verbose_name_plural = 'Список избранного'
         constraints = [
             models.UniqueConstraint(
                 fields=['user', 'recipe'],
@@ -211,6 +149,7 @@ class ShoppingCart(models.Model):
 
     class Meta:
         verbose_name = 'Список покупок'
+        verbose_name_plural = 'Список покупок'
         constraints = [
             models.UniqueConstraint(
                 fields=['user', 'recipe'],

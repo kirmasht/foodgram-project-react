@@ -3,10 +3,13 @@ from rest_framework import serializers
 
 
 from recipes.models import (
-    FavoriteRecipe, Ingredient,
+    FavoriteRecipe,
     IngredientsAmount, Recipe,
-    ShoppingCart, Tag
+    ShoppingCart
 )
+from ingridients.models import Ingredient
+from tags.models import Tag
+
 from users.models import CustomUser, Follow
 from .utils import Base64ImageField
 
