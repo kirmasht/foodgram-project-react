@@ -2,7 +2,6 @@ from rest_framework import serializers, exceptions
 
 from users.serializers import CustomUserSerializer
 from tags.serializers import TagSerializer
-
 from recipes.models import (
     FavoriteRecipe,
     IngredientsAmount, Recipe,
@@ -103,17 +102,23 @@ class RecipeCreateUpdateSerializer(serializers.ModelSerializer):
 
     def validate_ingredients(self, ingredients):
         if not ingredients:
-            raise exceptions.ValidationError('Количество ингредиента не должно быть меньше 1')
+            raise exceptions.ValidationError(
+                'Количество ингредиента не должно быть меньше 1'
+            )
 
         ingredients_id_list = [ingredient['id'] for ingredient in ingredients]
         for ingredient_id in ingredients_id_list:
             if ingredients_id_list.count(ingredient_id) > 1:
-                raise exceptions.ValidationError('Ингредиенты должны быть уникальными.')
+                raise exceptions.ValidationError(
+                    'Ингредиенты должны быть уникальными.'
+                )
         return ingredients
 
     def validate_cooking_time(self, cooking_time):
         if cooking_time <= 0:
-            raise exceptions.ValidationError('Минимальное время приготовления 1 минута.')
+            raise exceptions.ValidationError(
+                'Минимальное время приготовления 1 минута.'
+            )
         return cooking_time
 
     @staticmethod

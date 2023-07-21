@@ -3,7 +3,6 @@ from rest_framework import permissions
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from .models import Ingredient
-
 from .serializers import IngredientSerializer
 
 

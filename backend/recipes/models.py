@@ -5,6 +5,7 @@ from django.db import models
 
 from ingridients.models import Ingredient
 from tags.models import Tag
+
 User = get_user_model()
 
 
