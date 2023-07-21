@@ -12,3 +12,4 @@ python-dotenv
 sqlparse==0.4.3
 requests==2.28.2
 Pillow==9.3.0
+fpdf2==2.7.4

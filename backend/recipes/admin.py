@@ -9,6 +9,7 @@ class IngredientsAmountInline(admin.TabularInline):
     extra = 1
     autocomplete_fields = ('ingredient',)
 
+
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ('name', 'author', 'display_tags',

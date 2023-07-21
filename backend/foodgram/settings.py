@@ -22,7 +22,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*foodgram911.sytes.net',
 ]
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     '158.160.66.67', 'localhost', 'backend', '127.0.0.1', 'foodgram911.sytes.net',
@@ -76,12 +76,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'foodgram.wsgi.application'
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -141,7 +135,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_PAGINATION_CLASS':
-        'api.paginations.LimitPagination',
+        'recipes.paginations.LimitPagination',
     'PAGE_SIZE': 6,
 }
 
@@ -149,15 +143,15 @@ DJOSER = {
     'LOGIN_FIELD': 'email',
     'HIDE_USERS': False,
     'PERMISSIONS': {
-        'recipe': ['api.permissions.AuthorStaffOrReadOnly'],
-        'recipe_list': ['api.permissions.AuthorStaffOrReadOnly'],
+        'recipe': ['recipes.permissions.AuthorStaffOrReadOnly'],
+        'recipe_list': ['recipes.permissions.AuthorStaffOrReadOnly'],
         'user': ['djoser.permissions.CurrentUserOrAdminOrReadOnly'],
         'user_list': ['rest_framework.permissions.AllowAny'],
         'create_user': ['rest_framework.permissions.AllowAny']
     },
     'SERIALIZERS': {
-        'user': 'api.serializers.CustomUserSerializer',
-        'user_list': 'api.serializers.CustomUserSerializer',
-        'current_user': 'api.serializers.CustomUserSerializer',
+        'user': 'users.serializers.CustomUserSerializer',
+        'user_list': 'users.serializers.CustomUserSerializer',
+        'current_user': 'users.serializers.CustomUserSerializer',
     },
 }

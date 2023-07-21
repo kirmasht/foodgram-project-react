@@ -2,6 +2,7 @@ from django.core import validators
 from django.conf import settings
 from django.db import models
 
+
 class Tag(models.Model):
     name = models.CharField(
         'Название',
