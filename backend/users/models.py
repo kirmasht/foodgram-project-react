@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.core.exceptions import ValidationError
+from django.core import validators
 from django.conf import settings
 
 
@@ -19,6 +19,18 @@ class CustomUser(AbstractUser):
         max_length=settings.CONST_LENGTH
     )
 
+    username = models.CharField(
+        'Логин',
+        max_length=settings.CONST_LENGTH,
+        unique=True,
+        validators=[
+            validators.MinLengthValidator(
+                3,
+                message='Логин должен быть длиннее 2х символов'
+            )
+        ]
+    )
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ('username', 'first_name', 'last_name')
 
@@ -29,18 +41,12 @@ class CustomUser(AbstractUser):
             models.UniqueConstraint(
                 fields=('username', 'email'),
                 name='unique_user'
-            )
+            ),
+            models.CheckConstraint(
+                check=models.Q(username__length__gte=3),
+                name="\nИмя должно быть длиннее\n",
+            ),
         ]
-
-    def clean(self):
-        if self.username == 'me':
-            raise ValidationError(
-                {'error': 'Невозможно создать пользователя с именем me'}
-            )
-
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        return super().save(*args, **kwargs)
 
     def __str__(self):
         return self.username
@@ -67,18 +73,13 @@ class Follow(models.Model):
             models.UniqueConstraint(
                 fields=['author', 'user'],
                 name='unique_follower'
-            )
+            ),
+            models.CheckConstraint(
+                check=~models.Q(
+                    author=models.F("user")),
+                name="\nНельзя подписаться на себя\n"
+            ),
         ]
-
-    def clean(self):
-        if self.user == self.author:
-            raise ValidationError(
-                {'error': 'Нельзя подписаться на себя'}
-            )
-
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        return super().save(*args, **kwargs)
 
     def __str__(self):
         return f'Автор: {self.author}, подписчик: {self.user}'

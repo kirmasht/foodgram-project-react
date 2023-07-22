@@ -7,6 +7,7 @@ from .models import (FavoriteRecipe, IngredientsAmount, Recipe,
 class IngredientsAmountInline(admin.TabularInline):
     model = IngredientsAmount
     extra = 1
+    min_num = 1
     autocomplete_fields = ('ingredient',)
 
 
