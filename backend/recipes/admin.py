@@ -1,7 +1,6 @@
 from django.contrib import admin
 
-from .models import (FavoriteRecipe, IngredientsAmount, Recipe,
-                     ShoppingCart)
+from .models import FavoriteRecipe, IngredientsAmount, Recipe, ShoppingCart
 
 
 class IngredientsAmountInline(admin.TabularInline):

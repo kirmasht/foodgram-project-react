@@ -1,16 +1,12 @@
-from rest_framework import serializers, exceptions
-
-from users.serializers import CustomUserSerializer
-from tags.serializers import TagSerializer
-from recipes.models import (
-    FavoriteRecipe,
-    IngredientsAmount, Recipe,
-    ShoppingCart
-)
 from ingridients.models import Ingredient
-from tags.models import Tag
+from rest_framework import exceptions, serializers
 
-from .utils import Base64ImageField
+from backend.api.utils import Base64ImageField
+from recipes.models import (FavoriteRecipe, IngredientsAmount, Recipe,
+                            ShoppingCart,)
+from tags.models import Tag
+from tags.serializers import TagSerializer
+from users.serializers import CustomUserSerializer
 
 
 class RecipeSerializer(serializers.ModelSerializer):
@@ -45,7 +41,6 @@ class RecipeListSerializer(serializers.ModelSerializer):
         fields = ('id', 'tags', 'author', 'ingredients', 'is_favorited',
                   'is_in_shopping_cart', 'name', 'image', 'text',
                   'cooking_time')
-        read_only_fields = ['__all__']
 
     def get_ingredients(self, obj):
         queryset = IngredientsAmount.objects.filter(recipe=obj)

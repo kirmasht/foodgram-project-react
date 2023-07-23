@@ -1,7 +1,8 @@
 from base64 import b64decode
 
-from django.core.files.base import ContentFile
 from rest_framework.serializers import ImageField
+
+from django.core.files.base import ContentFile
 
 
 class Base64ImageField(ImageField):

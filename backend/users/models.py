@@ -1,9 +1,10 @@
-from django.contrib.auth.models import AbstractUser
-from django.db import models
-from django.core import validators
 from django.conf import settings
+from django.contrib.auth.models import AbstractUser
+from django.core import validators
+from django.db import models
+from django.db.models.functions import Length
 
-
+models.CharField.register_lookup(Length)
 class CustomUser(AbstractUser):
     first_name = models.CharField(
         'Имя',
@@ -18,7 +19,6 @@ class CustomUser(AbstractUser):
         unique=True,
         max_length=settings.CONST_LENGTH
     )
-
     username = models.CharField(
         'Логин',
         max_length=settings.CONST_LENGTH,
