@@ -20,8 +20,10 @@ class CustomUserSerializer(UserSerializer):
             return False
         return Follow.objects.filter(user=user, author=obj.id).exists()
 
+
 class FollowRecipeImageSerializer(serializers.ModelSerializer):
     image = Base64ImageField(max_length=None, use_url=True)
+
     class Meta:
         model = Recipe
         fields = (
@@ -31,6 +33,7 @@ class FollowRecipeImageSerializer(serializers.ModelSerializer):
             "cooking_time",
         )
         read_only_fields = fields
+
 
 class FollowSerializer(serializers.ModelSerializer):
     recipes = serializers.SerializerMethodField(read_only=True)

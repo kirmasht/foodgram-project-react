@@ -5,6 +5,7 @@ from django.db import models
 from django.db.models.functions import Length
 
 models.CharField.register_lookup(Length)
+
 class CustomUser(AbstractUser):
     first_name = models.CharField(
         'Имя',
